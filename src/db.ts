@@ -27,6 +27,11 @@ const getPedidoPlatoRepository = () => AppDataSource.getRepository(PedidoPlato)
 const getPlatoRepository = () => AppDataSource.getRepository(Plato)
 
 export {
-    AppDataSource, getAdminConfigRepository,
-    getCategoriaRepository, getClienteRepository, getPedidoPlatoRepository, getPedidoRepository, getPlatoRepository
+    AppDataSource, 
+    getAdminConfigRepository,
+    getCategoriaRepository, 
+    getClienteRepository, 
+    getPedidoPlatoRepository, 
+    getPedidoRepository, 
+    getPlatoRepository
 }
