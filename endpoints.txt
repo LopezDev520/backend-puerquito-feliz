@@ -1,0 +1,12 @@
+Cliente:
+
+- /api/cliente/generar-token ==> Se envia el nombre y el numero de mesa y se genera un token
+- /api/cliente/enviar-pedido ==> Se envia el pedido y se guarda en base de datos
+
+Pedidos:
+
+- /api/pedido/obtener-pedidos ==> Obtiene los pedidos en ese momento registrados
+- /api/pedido/pagar-pedido/:id ==> Se paga el pedido en caja
+- /api/pedido/cancelar-pedido/:id ==> No confundir con pagar, 
+                                      cancelar el pedido es eliminarlo del sistema
+

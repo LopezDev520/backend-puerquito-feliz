@@ -12,7 +12,9 @@
   "packageManager": "pnpm@10.6.1",
   "dependencies": {
     "express": "^4.21.2",
+    "morgan": "^1.10.0",
     "mysql2": "^3.13.0",
+    "reflect-metadata": "^0.2.2",
     "typeorm": "^0.3.21"
   },
   "devDependencies": {
