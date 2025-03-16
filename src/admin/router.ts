@@ -1,9 +1,15 @@
 import { IRouter, Router } from "express";
-import { cambiarContrasena, cambiarNumeroMesas } from "./controller";
+import { verificarAdmin } from "./middlewares"
+import { cambiarContrasena, cambiarNumeroMesas, crearCategoria, crearPlato, iniciarSesion } from "./controller";
 
-const router: IRouter = Router()
+const router: Router = Router()
 
-router.post("/cambiar-contrasena", cambiarContrasena)
-router.post("/cambiar-numero-mesas", cambiarNumeroMesas)
+router.post("/login", iniciarSesion)
+
+router.post("/cambiar-contrasena", verificarAdmin, cambiarContrasena)
+router.post("/cambiar-numero-mesas", verificarAdmin, cambiarNumeroMesas)
+
+router.post("/crear-categoria", verificarAdmin, crearCategoria)
+router.post("/crear-plato", verificarAdmin, crearPlato)
 
 export default router

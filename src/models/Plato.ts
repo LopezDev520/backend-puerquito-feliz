@@ -1,6 +1,6 @@
-import { Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { PedidoPlato } from "./PedidoPlato";
+import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Categoria } from "./Categoria";
+import { PedidoPlato } from "./PedidoPlato";
 
 // Entidad Plato
 @Entity()
@@ -26,11 +26,6 @@ export class Plato {
   @OneToMany(() => PedidoPlato, pedidoPlato => pedidoPlato.plato)
   pedidoPlatos!: PedidoPlato[];
 
-  @ManyToMany(() => Categoria, categoria => categoria.platos)
-  @JoinTable({
-    name: "categorias_platos",
-    joinColumn: { name: "plato_id", referencedColumnName: "id" },
-    inverseJoinColumn: { name: "categoria_id", referencedColumnName: "id" }
-  })
-  categorias!: Categoria[];
+  @ManyToOne(() => Categoria, categoria => categoria.platos, { nullable: false })
+  categoria!: Categoria;
 }

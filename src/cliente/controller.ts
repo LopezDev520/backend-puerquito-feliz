@@ -1,7 +1,7 @@
 import type { Request, Response } from "express";
 import { Cliente } from "../models/Cliente";
 import { generateToken } from "../functions";
-import { getClienteRepository } from "../db";
+import { getAdminConfigRepository, getClienteRepository } from "../db";
 
 interface ClienteRequest {
     nombre: string
@@ -9,8 +9,9 @@ interface ClienteRequest {
 }
 
 const clienteRepository = getClienteRepository()
+const adminConfigRepository = getAdminConfigRepository()
 
-export function generarToken (req: Request, res: Response) {
+export async function generarToken (req: Request, res: Response) {
     const { nombre, num_mesa }: ClienteRequest = req.body
 
     const cliente = new Cliente()
@@ -18,7 +19,7 @@ export function generarToken (req: Request, res: Response) {
     cliente.num_mesa = num_mesa
     cliente.token = generateToken()
 
-    clienteRepository.save(cliente)
+    await clienteRepository.save(cliente)
 
     res.status(200).json({
         status: "OK",
@@ -28,4 +29,9 @@ export function generarToken (req: Request, res: Response) {
 
 export function enviarPedido (req: Request, res: Response) {
     res.status(200).send("Pedido enviado")
+}
+
+export async function obtenerNumeroMesas (req: Request, res: Response) {
+    const mesasConfig = await adminConfigRepository.findOne({ where: { field: "numero-de-mesas" } })
+    res.status(200).send(mesasConfig.value)
 }

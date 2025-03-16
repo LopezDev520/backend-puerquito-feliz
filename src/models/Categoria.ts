@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToMany, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Plato } from "./Plato";
 
 // Entidad Categoría
@@ -10,6 +10,6 @@ export class Categoria {
   @Column({ length: 255 })
   nombre!: string;
 
-  @ManyToMany(() => Plato, plato => plato.categorias)
-  platos!: Plato[];
+  @OneToMany(() => Plato, plato => plato.categoria)
+  platos: Plato[]
 }

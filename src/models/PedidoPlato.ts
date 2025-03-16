@@ -15,6 +15,9 @@ export class PedidoPlato {
   @JoinColumn({ name: "plato_id" })
   plato!: Plato;
 
+  @Column({ type: "varchar" })
+  anotacion!: string
+
   @Column({ type: "bigint" })
   cantidad!: number;
 }

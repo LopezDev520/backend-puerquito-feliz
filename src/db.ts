@@ -16,7 +16,7 @@ const AppDataSource = new DataSource({
     database: "appdatabase",
     entities: [Cliente, Pedido, AdminConfig, Categoria, PedidoPlato, Plato],
     synchronize: true,
-    logging: true
+    // logging: true
 })
 
 const getClienteRepository = () => AppDataSource.getRepository(Cliente)
