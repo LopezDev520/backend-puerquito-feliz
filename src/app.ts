@@ -6,6 +6,7 @@ import fileUpload from "express-fileupload"
 
 import ClienteRouter from "./cliente/router.ts"
 import AdminRouter from "./admin/router.ts"
+import CajaRouter from "./caja/router.ts"
 import { AppDataSource } from "./db.ts"
 import { initAdminSettings } from "./functions.ts"
 import path from "path"
@@ -26,6 +27,7 @@ app.use("/uploads/images", express.static(path.join(__dirname, "../images")))
 // Routers
 app.use("/api/cliente", ClienteRouter)
 app.use("/api/admin", AdminRouter)
+app.use("/api/caja", CajaRouter)
 // Routers
 
 AppDataSource.initialize().then(() => {

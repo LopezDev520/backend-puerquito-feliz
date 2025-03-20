@@ -6,6 +6,7 @@ import { Cliente } from "./models/Cliente"
 import { Pedido } from "./models/Pedido"
 import { PedidoPlato } from "./models/PedidoPlato"
 import { Plato } from "./models/Plato"
+import { Pago } from "./models/Pago"
 
 const AppDataSource = new DataSource({
     type: "mysql",
@@ -14,9 +15,17 @@ const AppDataSource = new DataSource({
     username: "root",
     password: "",
     database: "appdatabase",
-    entities: [Cliente, Pedido, AdminConfig, Categoria, PedidoPlato, Plato],
+    entities: [
+        Cliente, 
+        Pedido, 
+        AdminConfig, 
+        Categoria, 
+        PedidoPlato, 
+        Plato,
+        Pago
+    ],
     synchronize: true,
-    // logging: true
+    logging: true
 })
 
 const getClienteRepository = () => AppDataSource.getRepository(Cliente)
@@ -25,6 +34,7 @@ const getAdminConfigRepository = () => AppDataSource.getRepository(AdminConfig)
 const getCategoriaRepository = () => AppDataSource.getRepository(Categoria)
 const getPedidoPlatoRepository = () => AppDataSource.getRepository(PedidoPlato)
 const getPlatoRepository = () => AppDataSource.getRepository(Plato)
+const getPagoRepository = () => AppDataSource.getRepository(Pago)
 
 export {
     AppDataSource, 
@@ -33,5 +43,6 @@ export {
     getClienteRepository, 
     getPedidoPlatoRepository, 
     getPedidoRepository, 
-    getPlatoRepository
+    getPlatoRepository,
+    getPagoRepository
 }

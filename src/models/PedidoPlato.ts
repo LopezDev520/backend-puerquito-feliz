@@ -20,4 +20,7 @@ export class PedidoPlato {
 
   @Column({ type: "bigint" })
   cantidad!: number;
+
+  @Column()
+  subtotal!: number
 }

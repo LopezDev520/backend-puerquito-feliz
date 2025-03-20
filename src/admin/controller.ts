@@ -4,7 +4,6 @@ import { getAdminConfigRepository, getCategoriaRepository, getPlatoRepository } 
 import { Categoria } from "../models/Categoria"
 import { Plato } from "../models/Plato"
 import { generateToken } from "../functions"
-import { AdminConfig } from "../models/AdminConfig"
 
 interface CambiarContrasenaRequest { nueva_contrasena: string }
 interface CambiarNumeroMesaRequest { numero_mesas: number }

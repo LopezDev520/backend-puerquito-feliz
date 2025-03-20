@@ -1,17 +1,34 @@
 import type { Request, Response } from "express";
 import { Cliente } from "../models/Cliente";
 import { generateToken } from "../functions";
-import { getAdminConfigRepository, getClienteRepository } from "../db";
+import { getAdminConfigRepository, getClienteRepository, getPedidoPlatoRepository, getPedidoRepository, getPlatoRepository } from "../db";
+import { Pedido } from "../models/Pedido";
+import { PedidoPlato } from "../models/PedidoPlato";
 
 interface ClienteRequest {
     nombre: string
     num_mesa: number
 }
 
+interface EnviarPedidoRequest {
+    pedido_id?: number
+    pedidos: PedidoRequest[]
+}
+
+interface PedidoRequest {
+    plato_id: number
+    cantidad: number
+    anotacion: string
+}
+
 const clienteRepository = getClienteRepository()
 const adminConfigRepository = getAdminConfigRepository()
 
-export async function generarToken (req: Request, res: Response) {
+const platoRepository = getPlatoRepository()
+const pedidoRepository = getPedidoRepository()
+const pedidoPlatoRepository = getPedidoPlatoRepository()
+
+export async function generarToken(req: Request, res: Response) {
     const { nombre, num_mesa }: ClienteRequest = req.body
 
     const cliente = new Cliente()
@@ -27,11 +44,39 @@ export async function generarToken (req: Request, res: Response) {
     })
 }
 
-export function enviarPedido (req: Request, res: Response) {
-    res.status(200).send("Pedido enviado")
+export async function enviarPedido(req: Request, res: Response) {
+    const { pedido_id, pedidos }: EnviarPedidoRequest = req.body
+    const token = req.get("Authorization")
+
+    let pedido: Pedido
+    const cliente = await clienteRepository.findOneBy({ token })
+
+    if (pedido_id) pedido = await pedidoRepository.findOneBy({ id: pedido_id })
+    else {
+        pedido = new Pedido()
+        pedido.fecha = new Date()
+        pedido.cliente = cliente
+        pedido.estado = "Pendiente"
+        await pedidoRepository.save(pedido)
+    }
+
+    for (let pedidoReq of pedidos) {
+        const pedidoPlato = new PedidoPlato()
+        const plato = await platoRepository.findOneBy({ id: pedidoReq.plato_id })
+        
+        pedidoPlato.pedido = pedido
+        pedidoPlato.plato = plato
+        pedidoPlato.cantidad = pedidoReq.cantidad
+        pedidoPlato.anotacion = pedidoReq.anotacion
+        pedidoPlato.subtotal = pedidoReq.cantidad * plato.precio
+
+        await pedidoPlatoRepository.save(pedidoPlato)
+    }
+
+    res.status(200).send(pedido)
 }
 
-export async function obtenerNumeroMesas (req: Request, res: Response) {
+export async function obtenerNumeroMesas(req: Request, res: Response) {
     const mesasConfig = await adminConfigRepository.findOne({ where: { field: "numero-de-mesas" } })
     res.status(200).send(mesasConfig.value)
 }

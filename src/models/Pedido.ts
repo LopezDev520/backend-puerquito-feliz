@@ -1,8 +1,8 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Cliente } from "./Cliente";
 import { PedidoPlato } from "./PedidoPlato";
+import { Pago } from "./Pago";
 
-// Entidad Pedido
 @Entity()
 export class Pedido {
   @PrimaryGeneratedColumn()
@@ -18,6 +18,12 @@ export class Pedido {
   @Column({ length: 500 })
   estado!: string;
 
+  @Column({ default: true })
+  activado!: boolean;
+
   @OneToMany(() => PedidoPlato, pedidoPlato => pedidoPlato.pedido)
   pedidoPlatos!: PedidoPlato[];
+
+  @OneToOne(() => Pago, pago => pago.pedido, { cascade: true })
+  pago!: Pago;
 }
