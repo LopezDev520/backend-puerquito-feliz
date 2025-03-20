@@ -23,6 +23,7 @@ app.use(fileUpload())
 app.use(morgan("dev"))
 
 app.use("/uploads/images", express.static(path.join(__dirname, "../images")))
+app.use("/", express.static(path.join(__dirname, "static")))
 
 // Routers
 app.use("/api/cliente", ClienteRouter)
