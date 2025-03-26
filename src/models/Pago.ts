@@ -15,6 +15,9 @@ export class Pago {
     @Column()
     cambio!: number;
 
+    @Column()
+    fecha: string = new Date().toLocaleDateString("ES-ES")
+
     @OneToOne(() => Pedido, pedido => pedido.pago, { onDelete: "CASCADE" })
     @JoinColumn({ name: "pedido_id" })
     pedido!: Pedido;

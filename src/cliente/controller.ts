@@ -1,7 +1,7 @@
 import type { Request, Response } from "express";
 import { Cliente } from "../models/Cliente";
 import { generateToken } from "../functions";
-import { getAdminConfigRepository, getClienteRepository, getPedidoPlatoRepository, getPedidoRepository, getPlatoRepository } from "../db";
+import { getAdminConfigRepository, getCategoriaRepository, getClienteRepository, getPedidoPlatoRepository, getPedidoRepository, getPlatoRepository } from "../db";
 import { Pedido } from "../models/Pedido";
 import { PedidoPlato } from "../models/PedidoPlato";
 
@@ -23,7 +23,7 @@ interface PedidoRequest {
 
 const clienteRepository = getClienteRepository()
 const adminConfigRepository = getAdminConfigRepository()
-
+const categoriaRepository = getCategoriaRepository()
 const platoRepository = getPlatoRepository()
 const pedidoRepository = getPedidoRepository()
 const pedidoPlatoRepository = getPedidoPlatoRepository()
@@ -44,6 +44,11 @@ export async function generarToken(req: Request, res: Response) {
     })
 }
 
+export async function obtenerMenu(req: Request, res: Response) {
+    const menu = await categoriaRepository.find({ relations: { platos: true } })
+    res.status(200).json(menu)
+}
+
 export async function enviarPedido(req: Request, res: Response) {
     const { pedido_id, pedidos }: EnviarPedidoRequest = req.body
     const token = req.get("Authorization")
@@ -54,7 +59,7 @@ export async function enviarPedido(req: Request, res: Response) {
     if (pedido_id) pedido = await pedidoRepository.findOneBy({ id: pedido_id })
     else {
         pedido = new Pedido()
-        pedido.fecha = new Date()
+        pedido.fecha = new Date().toLocaleDateString("ES-ES")
         pedido.cliente = cliente
         pedido.estado = "Pendiente"
         await pedidoRepository.save(pedido)

@@ -12,8 +12,8 @@ export class Pedido {
   @JoinColumn({ name: "client_id" })
   cliente!: Cliente;
 
-  @Column({ type: "date", nullable: true })
-  fecha?: Date;
+  @Column()
+  fecha: string = new Date().toLocaleDateString("ES-ES")
 
   @Column({ length: 500 })
   estado!: string;

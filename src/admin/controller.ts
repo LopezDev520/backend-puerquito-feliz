@@ -4,6 +4,10 @@ import { getAdminConfigRepository, getCategoriaRepository, getPlatoRepository } 
 import { Categoria } from "../models/Categoria"
 import { Plato } from "../models/Plato"
 import { generateToken } from "../functions"
+import path from "path"
+import crypto from "crypto"
+
+import type { UploadedFile } from "express-fileupload"
 
 interface CambiarContrasenaRequest { nueva_contrasena: string }
 interface CambiarNumeroMesaRequest { numero_mesas: number }
@@ -19,6 +23,8 @@ interface CrearPlatoRequest {
 const adminConfigRepository = getAdminConfigRepository()
 const categoriaRepository = getCategoriaRepository()
 const platoRepository = getPlatoRepository()
+
+const pathImagenes = path.join(__dirname, "../../images")
 
 export async function cambiarContrasena(req: Request, res: Response) {
     const { nueva_contrasena }: CambiarContrasenaRequest = req.body
@@ -53,10 +59,32 @@ export async function crearCategoria(req: Request, res: Response) {
 }
 
 export async function crearPlato(req: Request, res: Response) {
+    let { imagen } = req.files
     const { nombre, precio, descripcion, categoria_id }: CrearPlatoRequest = req.body
 
+    imagen = imagen as UploadedFile
+
+    const extension = imagen.name.split(".").at(-1);
+    const nombreLimpio = imagen.name
+        .replace(/\s+/g, "_") // Reemplaza espacios con "_"
+        .replace(/[^a-zA-Z0-9._-]/g, ""); // Elimina caracteres especiales
+
+    // Agrega un hash único al nombre para evitar duplicados
+    const hash = crypto.randomUUID(); // Genera un UUID único
+    const nombreImagen = `${path.parse(nombreLimpio).name}_${hash}.${extension}`;
+    const pathImagen = path.join(pathImagenes, nombreImagen);
+
+    imagen.mv(pathImagen, (err) => {
+        if (err) {
+            console.error("Error al mover la imagen:", err);
+        } else {
+            console.log("Imagen guardada en:", pathImagen);
+        }
+    });
+
+
     const nuevoPlato = new Plato()
-    nuevoPlato.imagen = "/plato-tal"
+    nuevoPlato.imagen = "/uploads/images/" + nombreImagen
     nuevoPlato.nombre = nombre
     nuevoPlato.precio = precio
     nuevoPlato.descripcion = descripcion
@@ -83,4 +111,14 @@ export async function iniciarSesion(req: Request, res: Response) {
 
         res.status(200).send(token)
     } else res.status(401).send("La contraseña no es correcta")
+}
+
+export async function obtenerContrasena(req: Request, res: Response) {
+    const contrasenaConfig = await adminConfigRepository.findOne({ where: { field: "contrasena" } })
+    res.status(200).send(contrasenaConfig.value)
+}
+
+export async function obtenerCategoriasPlatos(req: Request, res: Response) {
+    const categorias = await categoriaRepository.find({ relations: { platos: true } })
+    res.status(200).send(categorias)
 }

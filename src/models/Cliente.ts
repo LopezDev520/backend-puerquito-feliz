@@ -15,6 +15,12 @@ export class Cliente {
   @Column()
   num_mesa: number;
 
+  @Column()
+  activo: boolean = true
+
+  @Column({ nullable: false })
+  fecha: string = new Date().toLocaleDateString("ES-ES")
+
   @OneToMany(() => Pedido, pedido => pedido.cliente)
   pedidos: Pedido[];
 }
