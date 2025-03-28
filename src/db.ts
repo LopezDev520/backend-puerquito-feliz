@@ -25,7 +25,7 @@ const AppDataSource = new DataSource({
         Pago
     ],
     synchronize: true,
-    logging: true
+    // logging: true
 })
 
 const getClienteRepository = () => AppDataSource.getRepository(Cliente)

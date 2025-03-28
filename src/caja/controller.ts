@@ -80,7 +80,7 @@ export async function obtenerDatosPanel(req: Request, res: Response) {
     const ventaDelDia = await pagoRepository.sum("total", { fecha: hoy })
     const dineroEnCaja = await pagoRepository.sum("dineroRecibido", { fecha: hoy })
     const clientesEnLugar = await clienteRepositoy.count({ where: { fecha: hoy, activo: true } })
-    const pedidosPagados = await pedidoRepository.count({ where: { fecha: hoy, pago: true } })
+    const pedidosPagados = await pedidoRepository.count({ where: { fecha: hoy, pago: false } })
 
     // Obtener platos más vendidos del día
     const platosVendidos = await pedidoPlatoRepository
