@@ -12,4 +12,8 @@ export class Categoria {
 
   @OneToMany(() => Plato, plato => plato.categoria)
   platos: Plato[]
+
+  // constructor(categoria?) {
+  //   this.nombre = categoria.nombre
+  // }
 }

@@ -1,5 +1,7 @@
+import { UploadedFile } from "express-fileupload";
 import { getAdminConfigRepository } from "./db";
 import { AdminConfig } from "./models/AdminConfig";
+import path from "path";
 
 const adminConfigRepository = getAdminConfigRepository()
 
@@ -42,4 +44,26 @@ export function generateToken(longitud: number = 32): string {
     }
 
     return token + Date.now().toString(36); // Agregar timestamp para mayor unicidad
+}
+
+export function moveImages(imagen: UploadedFile, pathImagenes: string) {
+    const extension = imagen.name.split(".").at(-1);
+        const nombreLimpio = imagen.name
+            .replace(/\s+/g, "_") // Reemplaza espacios con "_"
+            .replace(/[^a-zA-Z0-9._-]/g, ""); // Elimina caracteres especiales
+    
+        // Agrega un hash único al nombre para evitar duplicados
+        const hash = crypto.randomUUID(); // Genera un UUID único
+        const nombreImagen = `${path.parse(nombreLimpio).name}_${hash}.${extension}`;
+        const pathImagen = path.join(pathImagenes, nombreImagen);
+    
+        imagen.mv(pathImagen, (err) => {
+            if (err) {
+                console.error("Error al mover la imagen:", err);
+            } else {
+                console.log("Imagen guardada en:", pathImagen);
+            }
+        });
+
+        return nombreImagen
 }

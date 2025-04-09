@@ -1,6 +1,7 @@
 import type { Request, Response } from "express";
 import { getClienteRepository, getPagoRepository, getPedidoPlatoRepository, getPedidoRepository } from "../db";
 import { Pago } from "../models/Pago";
+import { SocketListSingleton } from "../SocketList";
 
 const pedidoRepository = getPedidoRepository()
 const pagoRepository = getPagoRepository()
@@ -126,5 +127,35 @@ export async function obtenerDatosPanel(req: Request, res: Response) {
         pedidosPagados,
         platosVendidos: platosFormateados
     })
+
+}
+
+export async function obtenerPedidos (req: Request, res: Response) {
+    const pedidosHoy = await pedidoRepository.find({ relations: { cliente: true, pago: true } })
+    res.status(200).json(pedidosHoy);
+}
+
+export async function cambiarEstadoPedido (req: Request, res: Response) {
+
+    const socketList = SocketListSingleton.getInstance()
+
+    const { estado } = req.body
+    
+    const pedido = await pedidoRepository.findOne({ 
+        where: { id: Number(req.query.pedido_id) },
+        relations: { cliente: true }
+    })
+
+    pedido.estado = estado
+
+    await pedidoRepository.save(pedido)
+
+    const clienteSocket = socketList.getSocket(pedido.cliente.token)
+
+    if (clienteSocket) {
+        clienteSocket.emit("estado-cambiado", estado)
+    }
+
+    res.status(200).send("Estado cambiado!")
 
 }

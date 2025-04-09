@@ -21,11 +21,19 @@ export class Plato {
   precio!: number;
 
   @Column({ type: "boolean" })
-  disponible!: boolean;
+  activo!: boolean;
 
   @OneToMany(() => PedidoPlato, pedidoPlato => pedidoPlato.plato)
   pedidoPlatos!: PedidoPlato[];
 
   @ManyToOne(() => Categoria, categoria => categoria.platos, { nullable: false })
   categoria!: Categoria;
+
+  // constructor(plato?) {
+  //   this.nombre = plato.nombre
+  //   this.precio = plato.precio
+  //   this.descripcion = plato.descripcion
+  //   this.activo = plato.activo || true
+  //   this.categoria = plato.categoria
+  // }
 }

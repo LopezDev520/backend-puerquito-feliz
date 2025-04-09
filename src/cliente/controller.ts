@@ -45,13 +45,15 @@ export async function generarToken(req: Request, res: Response) {
 }
 
 export async function obtenerMenu(req: Request, res: Response) {
-    const menu = await categoriaRepository.find({ relations: { platos: true } })
+    const menu = await categoriaRepository.find({ where: { platos: { activo: true } }, relations: { platos: true } })
     res.status(200).json(menu)
 }
 
 export async function enviarPedido(req: Request, res: Response) {
     const { pedido_id, pedidos }: EnviarPedidoRequest = req.body
     const token = req.get("Authorization")
+
+    console.log(pedidos)
 
     let pedido: Pedido
     const cliente = await clienteRepository.findOneBy({ token })

@@ -1,5 +1,6 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Pedido } from "./Pedido";
+import { generateToken } from "../functions";
 
 @Entity()
 export class Cliente {
@@ -23,4 +24,10 @@ export class Cliente {
 
   @OneToMany(() => Pedido, pedido => pedido.cliente)
   pedidos: Pedido[];
+
+  // constructor(cliente?) {
+  //   this.nombre = cliente.nombre
+  //   this.num_mesa = cliente.num_mesa
+  //   this.token = generateToken()
+  // }
 }
