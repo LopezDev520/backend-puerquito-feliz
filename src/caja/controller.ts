@@ -130,18 +130,18 @@ export async function obtenerDatosPanel(req: Request, res: Response) {
 
 }
 
-export async function obtenerPedidos (req: Request, res: Response) {
+export async function obtenerPedidos(req: Request, res: Response) {
     const pedidosHoy = await pedidoRepository.find({ relations: { cliente: true, pago: true } })
     res.status(200).json(pedidosHoy);
 }
 
-export async function cambiarEstadoPedido (req: Request, res: Response) {
+export async function cambiarEstadoPedido(req: Request, res: Response) {
 
     const socketList = SocketListSingleton.getInstance()
 
     const { estado } = req.body
-    
-    const pedido = await pedidoRepository.findOne({ 
+
+    const pedido = await pedidoRepository.findOne({
         where: { id: Number(req.query.pedido_id) },
         relations: { cliente: true }
     })
@@ -157,5 +157,17 @@ export async function cambiarEstadoPedido (req: Request, res: Response) {
     }
 
     res.status(200).send("Estado cambiado!")
+
+}
+
+
+export async function obtenerPago(req: Request, res: Response) {
+
+    const pago = await pedidoRepository.findOne({ 
+        where: { pago: { id: Number(req.query.pago_id) } }, 
+        relations: { pago: true, cliente: true } 
+    })
+    
+    res.status(200).json(pago)
 
 }
